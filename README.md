@@ -4,12 +4,15 @@
 
 Target Track: **Reactive Omni Buildathon — Track 1: Every Second Counts** (low-latency, event-driven cross-chain DeFi automation across **Base Sepolia** ~200ms blocks, **Reactive Lasna Testnet** ~1s CometBFT finality, and **Unichain Sepolia / Base Sepolia** destination vaults).
 
-### Live Interactive Judge Dashboard & Simulator (GitHub Pages)
+### Live Interactive Judge Dashboard, 58s HD Video Demo & Simulator (GitHub Pages)
 
+- **58-Second HD Walkthrough Video (`demo.mp4`):** https://andreyjackkali.github.io/basisguard-reactive/demo.mp4
 - **Judge Dashboard & Cross-Chain Reactive Simulator:** https://andreyjackkali.github.io/basisguard-reactive/
   - **1-Click 60-Second Guided Judge Tour** (5 interactive steps covering Origin, Reactive Lasna `SYSTEM 0x8888...8888`, `requestCallbackV_1_0`, Destination dual-auth execution, and verified 19/19 Foundry proof)
   - **Interactive Cross-Chain Reactive Simulator** with 7 presets (`Normal Spread`, `Mild Basis Spike`, `Extreme Funding Shock`, `Critical HF <1.05x`, `Duplicate Replay Attempt`, `Cooldown Guard Trigger`, `Authorized Relayer Spoof`), live sliders, exact Solidity math, `IReactive.LogRecord` & `CallbackConfiguration_V_1_0` ABI payload inspector, and live `docs/deployments.json` readiness loader
 - **Printable 1-Page Judge Evaluation Card:** https://andreyjackkali.github.io/basisguard-reactive/judge-brief.html
+
+[![Watch BasisGuard Reactive 58s HD Demo](https://andreyjackkali.github.io/basisguard-reactive/demo-poster.png)](https://andreyjackkali.github.io/basisguard-reactive/demo.mp4)
 
 ---
 

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BasisGuard Reactive — Judge Dashboard & Cross-Chain Reactive Simulator</title>
   <meta name="description" content="Autonomous Cross-Chain Basis-Spread & Liquidation Sentinel built natively on Reactive Omni (reactive-lib-omni 2026 SDK). Interactive Judge Dashboard & Simulator." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%2322d3ee'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='monospace' font-weight='800' font-size='28' fill='%2305101c'%3EBG%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -19,15 +20,16 @@
       </a>
 
       <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#tour">60s Judge Tour</a>
-        <a href="#simulator">Cross-Chain Simulator</a>
-        <a href="#proof">Contracts &amp; 19/19 Proof</a>
-        <a href="#readiness">Deployment Readiness</a>
+        <a href="#tour">Judge Tour</a>
+        <a href="#simulator">Simulator</a>
+        <a href="#proof">19/19 Proof</a>
+        <a href="#readiness">Readiness</a>
       </nav>
 
       <div class="nav-actions">
-        <a class="btn btn-sm btn-ghost" href="./judge-brief.html">1-Page Judge Brief</a>
-        <a class="btn btn-sm" href="https://github.com/AndreyJackKali/basisguard-reactive" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+        <button id="btnVideoDemo" class="btn btn-sm btn-emerald" type="button">▶ 58s Demo</button>
+        <a class="btn btn-sm btn-ghost" href="./judge-brief.html">Judge Brief</a>
+        <a class="btn btn-sm" href="https://github.com/AndreyJackKali/basisguard-reactive" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </header>
@@ -49,6 +51,7 @@
           per-vault cooldowns with <code>&lt;1.05x</code> emergency bypass, rolling circuit breakers, and dual callback authentication.
         </p>
         <div class="hero-cta">
+          <button id="btnHeroVideoDemo" class="btn btn-emerald" type="button">▶ Watch 58s HD Demo</button>
           <button id="btnStartTour" class="btn btn-primary" type="button">Start 60s Guided Judge Tour</button>
           <a class="btn" href="#simulator">Launch Interactive Simulator</a>
           <a class="btn btn-ghost" href="./judge-brief.html">Printable Judge Card</a>
@@ -475,6 +478,7 @@
         <strong>BasisGuard Reactive</strong> · Built natively on <code>reactive-lib-omni</code> (2026 SDK) · MIT License
       </div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="./demo.mp4" target="_blank" rel="noopener noreferrer">58s HD Demo (MP4)</a>
         <a href="./judge-brief.html">1-Page Judge Brief</a>
         <a href="./deployments.json" target="_blank" rel="noopener noreferrer">deployments.json</a>
         <a href="https://github.com/AndreyJackKali/basisguard-reactive" target="_blank" rel="noopener noreferrer">GitHub Source</a>
@@ -482,6 +486,32 @@
       </div>
     </footer>
   </main>
+
+  <!-- 58s HD Video Demo Modal -->
+  <div id="bgVideoModal" class="video-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="bgVideoModalTitle" hidden>
+    <div class="video-modal-card">
+      <div class="video-modal-head">
+        <div>
+          <span class="badge badge-cyan" style="margin-bottom:4px;">58s HD WALKTHROUGH · 1280×720</span>
+          <h3 id="bgVideoModalTitle" class="video-modal-title">BasisGuard Reactive v0.3.0 — Cross-Chain Sentinel Demo</h3>
+        </div>
+        <button id="btnCloseVideoModal" class="btn btn-sm btn-ghost" type="button" aria-label="Close video modal">✕ Close</button>
+      </div>
+      <div class="video-modal-body">
+        <video id="bgDemoVideo" class="video-modal-player" controls playsinline preload="metadata" poster="./demo-poster.png">
+          <source src="./demo.mp4" type="video/mp4" />
+          Your browser does not support embedded HTML5 video. <a href="./demo.mp4">Download demo.mp4</a>.
+        </video>
+      </div>
+      <div class="video-modal-foot">
+        <span class="mono" style="font-size:12px;color:var(--text-dim);">OriginPerpOracle (Base Sepolia) → BasisGuardReactive (Lasna 0x8888) → DestinationHedgeVault · 19/19 Foundry PASS</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a class="btn btn-sm" href="./demo.mp4" target="_blank" rel="noopener noreferrer">Open Direct MP4</a>
+          <a class="btn btn-sm btn-ghost" href="./judge-brief.html">1-Page Judge Brief</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="./app.js"></script>
 </body>

@@ -1452,6 +1452,30 @@ function init() {
     renderTestMatrix(pill.dataset.filter);
   });
 
+  // Video Demo Modal Controls
+  const videoModal = el("bgVideoModal");
+  const demoVideo = el("bgDemoVideo");
+  const openVideoModal = () => {
+    if (!videoModal) return;
+    videoModal.hidden = false;
+    document.body.style.overflow = "hidden";
+  };
+  const closeVideoModal = () => {
+    if (!videoModal) return;
+    videoModal.hidden = true;
+    document.body.style.overflow = "";
+    if (demoVideo) demoVideo.pause();
+  };
+  el("btnVideoDemo")?.addEventListener("click", openVideoModal);
+  el("btnHeroVideoDemo")?.addEventListener("click", openVideoModal);
+  el("btnCloseVideoModal")?.addEventListener("click", closeVideoModal);
+  videoModal?.addEventListener("click", (e) => {
+    if (e.target === videoModal) closeVideoModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && videoModal && !videoModal.hidden) closeVideoModal();
+  });
+
   // Initial render
   renderTourStep(0, { syncSim: false });
   renderTestMatrix("ALL");

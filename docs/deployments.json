@@ -1,8 +1,11 @@
 {
   "project": "BasisGuard Reactive",
+  "version": "0.3.0",
   "repository": "https://github.com/AndreyJackKali/basisguard-reactive",
   "liveDashboard": "https://andreyjackkali.github.io/basisguard-reactive/",
   "judgeBrief": "https://andreyjackkali.github.io/basisguard-reactive/judge-brief.html",
+  "demoVideo": "https://andreyjackkali.github.io/basisguard-reactive/demo.mp4",
+  "demoPoster": "https://andreyjackkali.github.io/basisguard-reactive/demo-poster.png",
   "hackathon": {
     "name": "REACT — Reactive Omni Buildathon (DoraHacks)",
     "track": "Track 1: Every Second Counts",

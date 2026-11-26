@@ -1,0 +1,78 @@
+{
+  "project": "BasisGuard Reactive",
+  "repository": "https://github.com/AndreyJackKali/basisguard-reactive",
+  "liveDashboard": "https://andreyjackkali.github.io/basisguard-reactive/",
+  "judgeBrief": "https://andreyjackkali.github.io/basisguard-reactive/judge-brief.html",
+  "hackathon": {
+    "name": "REACT — Reactive Omni Buildathon (DoraHacks)",
+    "track": "Track 1: Every Second Counts",
+    "sdk": "reactive-lib-omni (2026 SDK — requestCallbackV_1_0 + AbstractReactive + AbstractCallback)"
+  },
+  "verification": {
+    "status": "local_foundry_verified",
+    "statusLabel": "Local Foundry Verified — Ready for Live Testnet Broadcast",
+    "honestNote": "All 19 Foundry tests (including 768 fuzz runs across 3 fuzz targets) pass locally against a faithful MockSystemContract etched at 0x8888...8888 and MockCallbackProxy with 160-bit sender injection. Live Base Sepolia & Lasna deployment slots remain null until Base Sepolia ETH arrives for faucet swap to lREACT and script/Deploy.s.sol broadcast.",
+    "solcVersion": "0.8.29",
+    "evmVersion": "cancun",
+    "viaIR": true,
+    "testsPassed": 19,
+    "testsTotal": 19,
+    "fuzzSuites": 3,
+    "fuzzRunsPerSuite": 256,
+    "fuzzRunsTotal": 768,
+    "runtimeSizesBytes": {
+      "OriginPerpOracle": 2685,
+      "BasisGuardReactive": 9976,
+      "DestinationHedgeVault": 5693
+    }
+  },
+  "officialReactiveOmniInfra": {
+    "lasna": {
+      "name": "Reactive Lasna Testnet",
+      "chainId": 5318007,
+      "rpc": "https://lasna-rpc.rnk.dev/",
+      "explorer": "https://lasna.reactscan.net",
+      "systemContract": "0x8888888888888888888888888888888888888888"
+    },
+    "baseSepolia": {
+      "name": "Base Sepolia",
+      "chainId": 84532,
+      "rpc": "https://sepolia.base.org",
+      "explorer": "https://sepolia.basescan.org",
+      "callbackProxy": "0x476F44b11F5C942c58f4c8E3d0300E5710743585",
+      "lReactFaucet": "0x2afaFD298b23b62760711756088F75B7409f5967"
+    },
+    "unichainSepolia": {
+      "name": "Unichain Sepolia",
+      "chainId": 1301,
+      "rpc": "https://sepolia.unichain.org",
+      "explorer": "https://sepolia.uniscan.xyz",
+      "callbackProxy": "0x775c9B990ADe401060B78D0e98684eEf8d2466C1"
+    }
+  },
+  "liveDeployments": {
+    "originPerpOracle": {
+      "chain": "Base Sepolia (84532)",
+      "address": null,
+      "deployTx": null,
+      "explorerBase": "https://sepolia.basescan.org"
+    },
+    "basisGuardReactive": {
+      "chain": "Reactive Lasna (5318007)",
+      "address": null,
+      "deployTx": null,
+      "explorerBase": "https://lasna.reactscan.net"
+    },
+    "destinationHedgeVault": {
+      "chain": "Base Sepolia (84532) / Unichain Sepolia (1301)",
+      "address": null,
+      "deployTx": null,
+      "explorerBase": "https://sepolia.basescan.org"
+    },
+    "sampleTriggerLoop": {
+      "originEventTx": null,
+      "reactiveCallbackTx": null,
+      "destinationExecutionTx": null
+    }
+  }
+}

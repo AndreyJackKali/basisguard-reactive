@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BasisGuard Reactive — Judge Dashboard & Cross-Chain Reactive Simulator</title>
+  <meta name="description" content="Autonomous Cross-Chain Basis-Spread & Liquidation Sentinel built natively on Reactive Omni (reactive-lib-omni 2026 SDK). Interactive Judge Dashboard & Simulator." />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">BG</span>
+        <span>
+          BasisGuard Reactive
+          <span class="brand-sub">Reactive Omni · Track 1: Every Second Counts</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#tour">60s Judge Tour</a>
+        <a href="#simulator">Cross-Chain Simulator</a>
+        <a href="#proof">Contracts &amp; 19/19 Proof</a>
+        <a href="#readiness">Deployment Readiness</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-sm btn-ghost" href="./judge-brief.html">1-Page Judge Brief</a>
+        <a class="btn btn-sm" href="https://github.com/AndreyJackKali/basisguard-reactive" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-card">
+        <div class="hero-badges">
+          <span class="badge badge-cyan"><span class="pulse-dot"></span> reactive-lib-omni (2026 SDK)</span>
+          <span class="badge badge-emerald">19/19 Foundry PASS · 768 Fuzz Runs</span>
+          <span class="badge badge-violet">requestCallbackV_1_0</span>
+        </div>
+        <h1>Zero-Keeper Cross-Chain Liquidation &amp; Basis-Spread Sentinel</h1>
+        <p class="hero-lead">
+          <strong>BasisGuard Reactive</strong> protects delta-neutral perp vaults autonomously across
+          <strong>Base Sepolia</strong> (~200ms blocks), <strong>Reactive Lasna</strong> (<code>SYSTEM 0x8888...8888</code>, ~1s finality),
+          and <strong>Destination Hedge Vaults</strong> — enforcing deterministic risk math, monotonic replay defense,
+          per-vault cooldowns with <code>&lt;1.05x</code> emergency bypass, rolling circuit breakers, and dual callback authentication.
+        </p>
+        <div class="hero-cta">
+          <button id="btnStartTour" class="btn btn-primary" type="button">Start 60s Guided Judge Tour</button>
+          <a class="btn" href="#simulator">Launch Interactive Simulator</a>
+          <a class="btn btn-ghost" href="./judge-brief.html">Printable Judge Card</a>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <span class="kpi-label">Foundry Verification</span>
+          <span class="kpi-value" style="color:#34d399;">19 / 19</span>
+          <span class="kpi-sub">100% pass · 768 fuzz iterations · Solc 0.8.29</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">Reactive Omni SDK</span>
+          <span class="kpi-value" style="color:var(--cyan);">V_1_0</span>
+          <span class="kpi-sub"><code>SYSTEM.requestCallbackV_1_0</code> (non-deprecated)</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">Target End-to-End</span>
+          <span class="kpi-value">~1.5s</span>
+          <span class="kpi-sub">Base 200ms + Lasna 1s CometBFT + Proxy relay</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">Zero Off-Chain Keepers</span>
+          <span class="kpi-value" style="color:#c4b5fd;">100%</span>
+          <span class="kpi-sub">Dual auth: <code>onlyServiceProvider</code> + <code>onlyCallbackSender</code></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1-Click 60s Guided Judge Tour -->
+    <section id="tour" class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">1-Click 60-Second Guided Judge Tour</h2>
+          <p class="section-sub">Walk through all 5 architectural &amp; verification pillars — each step syncs with the live cross-chain simulator below.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button id="btnTourPlay" class="btn btn-sm btn-primary" type="button">Auto-Play (60s)</button>
+          <button id="btnTourPrev" class="btn btn-sm" type="button">Prev</button>
+          <button id="btnTourNext" class="btn btn-sm" type="button">Next Step</button>
+        </div>
+      </div>
+
+      <div class="card tour-card">
+        <div class="tour-steps-nav" id="tourStepsNav" role="tablist" aria-label="Guided tour steps"></div>
+        <div class="tour-body">
+          <div class="tour-copy">
+            <h3 id="tourTitle"></h3>
+            <p id="tourSummary"></p>
+            <ul class="tour-bullets" id="tourBullets"></ul>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span class="badge badge-cyan" id="tourCodeBadge">Solidity Proof</span>
+              <button id="btnTourRunScenario" class="btn btn-sm btn-emerald" type="button">Run This Step in Simulator</button>
+            </div>
+            <pre class="tour-code" id="tourCode"></pre>
+          </div>
+        </div>
+        <div class="tour-footer">
+          <span class="mono" style="font-size:12px;color:var(--text-dim);" id="tourCounter">Step 1 / 5 · ~12s per step</span>
+          <div class="tour-progress-bar" aria-hidden="true">
+            <div class="tour-progress-fill" id="tourProgressFill" style="width:20%;"></div>
+          </div>
+          <span class="mono" style="font-size:12px;color:var(--cyan);" id="tourTimerLabel">Ready</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Cross-Chain Reactive Simulator -->
+    <section id="simulator" class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Interactive Cross-Chain Reactive Simulator</h2>
+          <p class="section-sub">
+            100% faithful JavaScript port of <code>OriginPerpOracle.sol</code>, <code>BasisGuardReactive.sol</code>, and <code>DestinationHedgeVault.sol</code> math, guards, and ABI payloads.
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="badge badge-cyan" id="simClockBadge">Sim Block Time: T+0s</span>
+          <span class="badge badge-violet" id="simBreakerBadge">Circuit Breaker: 0 / 3 (60s window)</span>
+        </div>
+      </div>
+
+      <!-- 3-Node Animated Pipeline -->
+      <div class="pipeline-wrap">
+        <div class="pipeline-grid">
+          <div class="node-card" id="nodeOrigin">
+            <div class="node-top">
+              <span class="node-chain">Origin · Base Sepolia (84532)</span>
+              <span class="badge" id="badgeOrigin">IDLE</span>
+            </div>
+            <h3 class="node-title">OriginPerpOracle.sol</h3>
+            <div class="node-contract">~200ms blocks · Monotonic Seq #<span id="originSeqVal">0</span></div>
+            <div class="node-meta" id="metaOrigin">
+              Ready to publish <code>FundingRateSpiked</code>, <code>SpreadDiverged</code>, or <code>HealthFactorCritical</code>.
+            </div>
+          </div>
+
+          <div class="link-connector">
+            <div class="link-track" id="link1"></div>
+            <span class="link-label" id="link1Label">Subscribed Log<br />~200ms</span>
+          </div>
+
+          <div class="node-card" id="nodeReactive">
+            <div class="node-top">
+              <span class="node-chain">Reactive Lasna (5318007)</span>
+              <span class="badge" id="badgeReactive">IDLE</span>
+            </div>
+            <h3 class="node-title">BasisGuardReactive.sol</h3>
+            <div class="node-contract">SYSTEM 0x8888...8888 · react(LogRecord)</div>
+            <div class="node-meta" id="metaReactive">
+              Inherits <code>AbstractReactive</code>. Calls <code>SYSTEM.requestCallbackV_1_0</code> after passing threshold, replay, cooldown &amp; circuit-breaker checks.
+            </div>
+          </div>
+
+          <div class="link-connector">
+            <div class="link-track" id="link2"></div>
+            <span class="link-label" id="link2Label">Callback Relay<br />~1.0s</span>
+          </div>
+
+          <div class="node-card" id="nodeDest">
+            <div class="node-top">
+              <span class="node-chain">Dest · Unichain / Base (1301)</span>
+              <span class="badge" id="badgeDest">IDLE</span>
+            </div>
+            <h3 class="node-title">DestinationHedgeVault.sol</h3>
+            <div class="node-contract">Callback Proxy → executeProtection()</div>
+            <div class="node-meta" id="metaDest">
+              Dual-auth <code>onlyServiceProvider</code> + <code>onlyCallbackSender</code> (160-bit injected Reactive sender). Persists <code>ExecutionReceipt</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulator Main Grid -->
+      <div class="sim-layout">
+        <!-- Left Controls Panel -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Scenario Presets &amp; Telemetry Controls</h3>
+            <span class="badge badge-cyan">ETH-PERP</span>
+          </div>
+
+          <div class="preset-grid" id="presetGrid"></div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="eventTypeSelect">Origin Event Emitter</label>
+              <span class="control-val" id="eventTopicShort">topic0</span>
+            </div>
+            <select id="eventTypeSelect" class="select-input">
+              <option value="FUNDING_SPIKED">FundingRateSpiked → TOP_UP_COLLATERAL</option>
+              <option value="SPREAD_DIVERGED">SpreadDiverged → REBALANCE_HEDGE</option>
+              <option value="HEALTH_CRITICAL">HealthFactorCritical → EMERGENCY_DELEVERAGE</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="sliderFunding">fundingRateBps (Threshold ±250 bps)</label>
+              <span class="control-val" id="valFunding">-400 bps (-4.00%)</span>
+            </div>
+            <input id="sliderFunding" type="range" min="-1200" max="1200" step="10" value="-400" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="sliderSpread">markSpotSpreadBps (Threshold ±150 bps)</label>
+              <span class="control-val" id="valSpread">+300 bps (Mark $3,090 / Idx $3,000)</span>
+            </div>
+            <input id="sliderSpread" type="range" min="-800" max="800" step="10" value="300" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="sliderHF">healthFactorBps (Min 1.15x · Bypass &lt;1.05x)</label>
+              <span class="control-val" id="valHF">11,000 bps (1.10x)</span>
+            </div>
+            <input id="sliderHF" type="range" min="10000" max="16000" step="50" value="11000" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="sliderNotional">Vault Notional Exposure (notionalUsd)</label>
+              <span class="control-val" id="valNotional">$100,000</span>
+            </div>
+            <input id="sliderNotional" type="range" min="25000" max="1000000" step="25000" value="100000" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="sliderCooldown">Per-Vault Cooldown (cooldownSec)</label>
+              <span class="control-val" id="valCooldown">15s</span>
+            </div>
+            <input id="sliderCooldown" type="range" min="5" max="120" step="5" value="15" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <label class="control-label" for="deliveryModeSelect">Execution / Attack Simulation Mode</label>
+            </div>
+            <select id="deliveryModeSelect" class="select-input">
+              <option value="NORMAL">Honest Reactive Omni Relay (SYSTEM + Proxy)</option>
+              <option value="REPLAY">Duplicate Replay Attempt (Same sequenceId &amp; actionId)</option>
+              <option value="SPOOF_SENDER">Spoofed Reactive Sender via Proxy (ATTACKER)</option>
+              <option value="DIRECT_BYPASS">Direct Call to Vault Bypassing Callback Proxy</option>
+            </select>
+          </div>
+
+          <div class="sim-actions">
+            <button id="btnEmitAnomaly" class="btn btn-primary" type="button">Emit FundingAnomaly &amp; Execute Cross-Chain Flow</button>
+            <div class="sim-actions-row">
+              <button id="btnAdvanceTime" class="btn btn-sm" type="button">Advance Clock +20s</button>
+              <button id="btnResetVault" class="btn btn-sm btn-ghost" type="button">Reset Vault State</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Live Inspector Panel -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Live Destination Vault State &amp; ABI Payload Inspector</h3>
+            <span class="badge badge-emerald" id="vaultActiveBadge">Vault 0x...A11CE Active</span>
+          </div>
+
+          <div class="vault-strip">
+            <div class="mini-stat">
+              <div class="mini-stat-label">Health Factor</div>
+              <div class="mini-stat-val" id="statHF">1.10x</div>
+              <div class="mini-stat-sub" id="statHFBps">11,000 bps</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-label">Collateral / Reserve</div>
+              <div class="mini-stat-val" id="statCollateral">$11,000</div>
+              <div class="mini-stat-sub" id="statReserve">Reserve: $5,000</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-label">Long Spot / Short Perp</div>
+              <div class="mini-stat-val" id="statLegs">$100k / $100k</div>
+              <div class="mini-stat-sub" id="statDelta">Net Delta: $0</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-label">Protections / Receipts</div>
+              <div class="mini-stat-val" id="statReceipts">0</div>
+              <div class="mini-stat-sub" id="statSuppressed">Suppressed: 0</div>
+            </div>
+          </div>
+
+          <div class="outcome-banner" id="outcomeBanner">
+            <div>
+              <div class="outcome-title" id="outcomeTitle">Select a preset or click "Emit FundingAnomaly" to run the cross-chain loop</div>
+              <div class="outcome-sub" id="outcomeSub">Every guard check, ABI byte, and vault state transition mirrors the verified Solidity contracts.</div>
+            </div>
+            <span class="badge badge-cyan" id="outcomeBadge">READY</span>
+          </div>
+
+          <div class="tabs" role="tablist">
+            <button class="tab-btn active" data-tab="tabMath" type="button">Risk Engine &amp; Guard Math</button>
+            <button class="tab-btn" data-tab="tabLogRecord" type="button">Origin Event &amp; LogRecord ABI</button>
+            <button class="tab-btn" data-tab="tabCallback" type="button">requestCallbackV_1_0 Payload</button>
+            <button class="tab-btn" data-tab="tabFeed" type="button">Audit Receipts (<span id="feedCount">0</span>)</button>
+          </div>
+
+          <div class="tab-panel active" id="tabMath">
+            <div class="checks-grid" id="guardChecksGrid"></div>
+            <pre class="code-block" id="mathBreakdown"></pre>
+          </div>
+
+          <div class="tab-panel" id="tabLogRecord">
+            <pre class="code-block" id="logRecordCode"></pre>
+          </div>
+
+          <div class="tab-panel" id="tabCallback">
+            <pre class="code-block" id="callbackPayloadCode"></pre>
+          </div>
+
+          <div class="tab-panel" id="tabFeed">
+            <div class="feed-list" id="auditFeedList">
+              <div class="feed-item">
+                <span>No cross-chain executions recorded yet. Click <strong>Emit</strong> above to trace a live cycle.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contract & Test Proof -->
+    <section id="proof" class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Contract Architecture &amp; Verified 19/19 Foundry Proof</h2>
+          <p class="section-sub">Compiled with Solc <code>0.8.29</code> (Cancun EVM, <code>via_ir=true</code>, optimizer 200 runs) against official <code>reactive-lib-omni</code>.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="badge badge-emerald">19 / 19 Tests PASS</span>
+          <span class="badge badge-cyan">768 Fuzz Runs (3 × 256)</span>
+          <span class="badge badge-violet">Runtime Sizes &lt; 10 KB</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header">
+          <h3 class="card-title">Smart Contract Specifications &amp; Exact Signatures</h3>
+          <span class="mono" style="font-size:12px;color:var(--text-muted);">forge build --sizes</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Contract</th>
+                <th>Chain Role</th>
+                <th>Base / SDK</th>
+                <th>Runtime Size</th>
+                <th>Key Verified Signatures</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code style="color:var(--cyan);">src/OriginPerpOracle.sol</code></td>
+                <td>Base Sepolia (<code>84532</code>)</td>
+                <td>Standalone</td>
+                <td class="mono">2,685 B</td>
+                <td class="mono" style="font-size:11.8px;">
+                  reportHealthFactor(bytes32,address,uint256,uint256,uint256)<br />
+                  reportSpreadDivergence(bytes32,address,uint256,uint256,int256)<br />
+                  reportFundingSpike(bytes32,address,int256,uint256,uint256)<br />
+                  computeBasisSpreadBps(uint256,uint256)
+                </td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--cyan);">src/BasisGuardReactive.sol</code></td>
+                <td>Reactive Lasna (<code>5318007</code>)</td>
+                <td><code>AbstractReactive</code> (<code>reactive-lib-omni</code>)</td>
+                <td class="mono">9,976 B</td>
+                <td class="mono" style="font-size:11.8px;">
+                  react(LogRecord) [0x0d152c2c · onlySystem]<br />
+                  SYSTEM.requestCallbackV_1_0(CallbackConfiguration_V_1_0) [0x6407b0c1]<br />
+                  computeDeleverageBps / computeRebalanceBps / computeTopUpBps<br />
+                  pause() / unpause() / coverDebt()
+                </td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--cyan);">src/DestinationHedgeVault.sol</code></td>
+                <td>Unichain (<code>1301</code>) / Base (<code>84532</code>)</td>
+                <td><code>AbstractCallback</code> (<code>reactive-lib-omni</code>)</td>
+                <td class="mono">5,693 B</td>
+                <td class="mono" style="font-size:11.8px;">
+                  executeProtection(address,bytes32,bytes32,address,uint8,uint256,int256,uint64) [0x6efaef23]<br />
+                  Modifiers: onlyServiceProvider + onlyCallbackSender(reactiveSender_)<br />
+                  computeHealthFactorBps / estimateSlippageBps / getReceipt
+                </td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--cyan);">src/BasisGuardTypes.sol</code></td>
+                <td>Shared Library</td>
+                <td>Canonical Constants</td>
+                <td class="mono">Inlined</td>
+                <td class="mono" style="font-size:11.8px;">
+                  ActionType { NONE, EMERGENCY_DELEVERAGE, REBALANCE_HEDGE, TOP_UP_COLLATERAL }<br />
+                  SuppressionReason (9 canonical codes) · RiskConfig · 3 topic0 hashes
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Complete Foundry Test Matrix (19/19 PASS · 768 Fuzz Cases)</h3>
+          <div class="filter-pills" id="testFilterPills">
+            <button class="pill active" data-filter="ALL" type="button">All (19)</button>
+            <button class="pill" data-filter="E2E" type="button">E2E Relay (5)</button>
+            <button class="pill" data-filter="GUARDS" type="button">Guards &amp; Breaker (5)</button>
+            <button class="pill" data-filter="SECURITY" type="button">Security (5)</button>
+            <button class="pill" data-filter="ECONOMY" type="button">Economy (1)</button>
+            <button class="pill" data-filter="FUZZ" type="button">Fuzz 768 runs (3)</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Test Function</th>
+                <th>Category</th>
+                <th>Gas / Fuzz Runs</th>
+                <th>What It Proves</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="testMatrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honest Deployment Readiness -->
+    <section id="readiness" class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Deployment Readiness &amp; Live Network Registry</h2>
+          <p class="section-sub">Dynamically loaded from <a href="./deployments.json" target="_blank" rel="noopener noreferrer"><code>docs/deployments.json</code></a> — zero fabricated addresses or fake transaction hashes.</p>
+        </div>
+        <span class="badge badge-amber" id="readinessStatusBadge">Loading deployments.json...</span>
+      </div>
+
+      <div class="card">
+        <p id="readinessNote" style="margin:0 0 12px;color:var(--text-dim);font-size:13.5px;"></p>
+        <div class="deploy-grid" id="deployCardsGrid"></div>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:8px;color:var(--text);">Official Reactive Omni Infrastructure Wired in Code &amp; <code>script/Deploy.s.sol</code></div>
+          <div class="deploy-grid" id="infraCardsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <strong>BasisGuard Reactive</strong> · Built natively on <code>reactive-lib-omni</code> (2026 SDK) · MIT License
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="./judge-brief.html">1-Page Judge Brief</a>
+        <a href="./deployments.json" target="_blank" rel="noopener noreferrer">deployments.json</a>
+        <a href="https://github.com/AndreyJackKali/basisguard-reactive" target="_blank" rel="noopener noreferrer">GitHub Source</a>
+        <a href="https://lasna.reactscan.net" target="_blank" rel="noopener noreferrer">Lasna Reactscan</a>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
